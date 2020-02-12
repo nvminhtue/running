@@ -1,0 +1,1 @@
+export { default as mainRunning } from './mainRunning.png';
