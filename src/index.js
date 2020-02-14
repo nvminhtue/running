@@ -6,7 +6,7 @@ import App from './components';
 import { FontStyle } from './asset/fonts'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <React.Fragment>

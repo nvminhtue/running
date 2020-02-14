@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { connect } from 'formik';
 import { Input, Button } from 'reactstrap';
+import { toast } from 'react-toastify';
 
 import { Form } from '../../common'
 
@@ -12,7 +14,7 @@ const ReactButton = styled(Button)`
 `;
 
 const ReactInput = styled(Input)`
-  width: 200px;
+  width: 400px;
   height: 40px;
   margin: 0 10px;
   font-family: 'FiraCode-Retina';
@@ -28,18 +30,28 @@ const Label = styled.h5`
   text-align: center;
 `;
 
-export default ({ setTimeSubmit, timeSubmit, typeClick }) => {
+const TimeForm = ({ setTimeSubmit, timeSubmit, typeClick, handleSubmit, setGreeting, formik: { setFieldValue, errors, submitCount, isValid, values } }) => {
   const clickTime = () => {
-    setTimeSubmit(true);
+    handleSubmit();
+    if ( isValid ) {
+      setTimeSubmit(true);
+      setGreeting(true);
+    }
   };
+
+  useEffect(() => {
+    !!submitCount && !!Object.keys(errors).length && toast.warn(errors.inlateTime);
+  }, [errors, submitCount])
 
   return (
     <Form isDisplay={typeClick === true && timeSubmit === false}>
-      <Label>Input inlate time (minutes)</Label>
+      <Label>Me come late (minutes)</Label>
       <div style={{ display: 'flex', 'justifyContent': 'center', width: '100%' }}>
-        <ReactInput placeholder={"ex: 10"} />
-        <ReactButton color='info' onClick={() => clickTime()}>Submit</ReactButton>
+        <ReactInput name='inlateTime' placeholder={"e.g: 10 - number dude, number!"} value={values.inlateTime} onChange={ (e) => setFieldValue('inlateTime', e.target.value) } />
+        <ReactButton color='info' onClick={() => clickTime()}>Pay me</ReactButton>
       </div>
     </Form>
   )
 };
+
+export default connect(TimeForm)

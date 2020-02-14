@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import TypeForm from './TypeForm';
 import TimeForm from './TimeForm';
-import TimeLog from './TimeLog';
-
-import { Modal } from '../../common';
+import Greeting from './Greeting';
+import { connect } from 'formik';
 
 const FormWrapper = styled.div`
-    display: flex;
-    justify-content: start;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  height: 100%;
 `;
 
 const Title = styled.h1`
@@ -22,16 +21,14 @@ const Title = styled.h1`
   justify-content: center;
 `;
 
-export default () => {
-  const [ typeClick, setTypeClick ] = useState(false);
-  const [ timeSubmit, setTimeSubmit ] = useState(false);
+const MainForm = ({...rest }) => {
   return (
     <FormWrapper>
       <Title>RUN FOR YOUR LIFE</Title>
-      <TypeForm {...{ setTypeClick, typeClick } } />
-      <TimeForm {...{ setTimeSubmit, timeSubmit, typeClick } } />
-      <Modal isOpen={typeClick && timeSubmit}>
-        <TimeLog />
-      </Modal>
+      <TypeForm {... rest } />
+      <TimeForm { ...rest } />
+      <Greeting {...rest } />
     </FormWrapper>
 )};
+
+export default connect(MainForm);

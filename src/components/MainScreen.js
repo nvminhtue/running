@@ -17,7 +17,6 @@ const Wrapper = styled.div`
 
 const LeftImage = styled.img`
     width: 100%;
-    /* align-self: center; */
 `;
 
 const Part = styled.div`
@@ -30,13 +29,15 @@ const Part = styled.div`
     `}
 `;
 
-export default () => (
-  <Wrapper>
-    <Part portion={'40%'}>
-      <LeftImage src={mainRunning} alt='aaa' />
-    </Part>
-    <Part portion={'60%'}>
-      <MainForm />
-    </Part>
-  </Wrapper>
-);
+export default ({...rest}) => {
+
+  return (
+    <Wrapper>
+      <Part portion={'40%'}>
+        <LeftImage src={mainRunning} alt='aaa' />
+      </Part>
+      <Part portion={'60%'}>
+        <MainForm {...rest} />
+      </Part>
+    </Wrapper>
+)};

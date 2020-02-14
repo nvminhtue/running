@@ -2,14 +2,19 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const FormWrapper = styled.div`
-    height: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex: 1;
+    justify-content: space-around;
     align-content: center;
     flex-wrap: wrap;
+    opacity: 1;
+    position: relative;
+    transition: opacity .5s;
+    overflow: hidden;
+
     ${props => !props.isDisplay && css`
-        display: none;
+        opacity: 0;
+        max-height: 0;
     `}
 `;
 
