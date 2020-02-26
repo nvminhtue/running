@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { mainRunning } from '../asset/images'
-import MainForm from './Form';
+import { mainRunning } from '../../asset/images'
+import MainForm from '../Form';
 
 const Wrapper = styled.div`
   display: flex;

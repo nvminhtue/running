@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactCanvasNest from 'react-canvas-nest';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { MdAnnouncement, MdHome } from 'react-icons/md';
 import { compose } from 'redux';
 import { withFormik } from 'formik';
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 
 import Schema from '../validation';
 import MainScreen from './MainScreen'
+import Registration from './Registration'
 import { Toast, Modal } from '../common';
 import { defaultValues } from '../models';
 
@@ -22,6 +23,13 @@ const AppWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const StepWrapper = styled.div`
+  display: none;
+  ${ props => props.isDisplayed && css`
+    display: block;
+  `}
 `;
 
 const TimeLogButton = styled(MdAnnouncement)`
@@ -58,6 +66,8 @@ const Running = ({ handleSubmit, resetForm }) => {
   const [ typeClick, setTypeClick ] = useState(false);
   const [ timeSubmit, setTimeSubmit ] = useState(false);
   const [ isGreeting, setGreeting ] = useState(false);
+  const [ isAuthenticated, setAuthenticaton ] = useState(false);
+
   useEffect(() => {
     if (isHome) {
       setOpenLog(false)
@@ -71,11 +81,16 @@ const Running = ({ handleSubmit, resetForm }) => {
 
   return (
     <AppWrapper>
-      <TimeLogButton onClick={() => setOpenLog(true)} />
-      <HomeButton onClick={() => setHome(!isHome)} />
       <ReactCanvasNest className='canvasNest' config={{ pointColor: ' 255, 255, 255 ', count: '60' }} style={{ zIndex: 1, minHeight: '100%' }} />
-      <MainScreen { ... { isOpenLog, setOpenLog, setHome, isHome, typeClick, setTypeClick, timeSubmit, setTimeSubmit, isGreeting, setGreeting, handleSubmit }} />
-      <Modal {...{ isOpenLog, setOpenLog } }/>
+      <StepWrapper isDisplayed={isAuthenticated}>
+        <Registration {...{ setAuthenticaton }} />
+      </StepWrapper>
+      <StepWrapper isDisplayed={!isAuthenticated}>
+        <TimeLogButton onClick={() => setOpenLog(true)} />
+        <HomeButton onClick={() => setHome(!isHome)} value={isAuthenticated && ''}/>
+        <MainScreen { ... { isOpenLog, setOpenLog, setHome, isHome, typeClick, setTypeClick, timeSubmit, setTimeSubmit, isGreeting, setGreeting, handleSubmit }} />
+        <Modal {...{ isOpenLog, setOpenLog } }/>
+      </StepWrapper>
       <Toast />
     </AppWrapper>
 )};
