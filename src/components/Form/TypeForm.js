@@ -12,7 +12,7 @@ const ReactButton = styled(Button)`
   font-weight: 400;
 `;
 
-const TypeForm = ({ setTypeClick, typeClick, handleSubmit, setGreeting, isGreeting, setHome, isHome, formik: { setFieldValue } }) => {
+const TypeForm = ({ setTypeClick, typeClick, handleSubmit, setGreeting, isGreeting, setHome, isHome, formik: { setFieldValue, resetForm } }) => {
   useEffect(() => {
     setHome(false)
   }, [setHome]);
