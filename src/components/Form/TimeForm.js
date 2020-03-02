@@ -40,7 +40,9 @@ const TimeForm = ({ setTimeSubmit, timeSubmit, typeClick, handleSubmit, setGreet
   };
 
   useEffect(() => {
-    !!submitCount && !!Object.keys(errors).length && toast.warn(errors.inlateTime);
+    if (!!submitCount && !!Object.keys(errors).length) {
+      toast.warn(errors.inlateTime);
+    } 
   }, [errors, submitCount])
 
   return (

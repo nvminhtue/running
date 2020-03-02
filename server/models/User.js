@@ -1,5 +1,6 @@
-var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+
+var { mongoose } = require('../index');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -8,7 +9,7 @@ var UserSchema = mongoose.Schema({
         type: String,
         require: true,
     },
-    userName: {
+    username: {
         type: String,
         require: true,
         index: { unique: true },
@@ -19,28 +20,16 @@ var UserSchema = mongoose.Schema({
     }
 })
 
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function (next) {
     var user = this;
-
     if(!user.isModified('password')) return next();
 
     user.password = bcrypt.hashSync(user.password, SALT_WORK_FACTOR);
     next();
-
-    // bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-    //     if (err) return next(err);
-
-    //     bcrypt.hash(user.password, salt, (err, hash) => {
-    //         if (err) return next(err);
-
-    //         user.password = hash;
-    //         next();
-    //     })
-    // })
 })
 
-UserSchema.methods.comparePassword = (candidatePassword, cb) => {
-    return bcrypt.compareSync(candidatePassword, this.password, (err, isMatch) => err ? cb(err) : cb(null, isMatch)
-)}
+UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+    return cb(null, bcrypt.compareSync(candidatePassword, this.password));
+}
 
-module.exports = mongoose.model('User', UserSchema);
+exports.mongooseUser = mongoose.model('User', UserSchema);

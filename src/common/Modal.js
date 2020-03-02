@@ -70,8 +70,7 @@ const Row = styled.tr`
   }
 `;
 
-export default connect(({ isOpenLog, setOpenLog, formik: { values } }) => {
-  console.log(values);
+export default connect(({ isOpenLog, setOpenLog }) => {
   return (
     <CentralModal isOpen={isOpenLog}>
       <CloseButton onClick={() => setOpenLog(false)} />
