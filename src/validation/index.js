@@ -1,7 +1,2 @@
-import * as Yup from 'yup';
-
-export default Yup.object().shape({
-  inlateTime: Yup.number()
-    .required('Nhập đi bạn êi!')
-    .typeError('Nhập số bạn êi!'),
-})
+export { default as MainValidation } from './main';
+export { default as RegistrationValidation } from './registration';

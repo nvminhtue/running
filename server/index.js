@@ -1,14 +1,13 @@
 let express = require('express');
 let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
+var mongoose = require('mongoose');
+
+exports.mongoose = mongoose;
 
 let userRouter = require('./routers/userRouter');
 
 let app = express();
 
-// app.get('/', (req, res) => {
-//   res.send('hello world');
-// })
 app.use(bodyParser.urlencoded({
     extended: true,
 }));
@@ -17,9 +16,7 @@ app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/resthub', { useNewUrlParser: true});
 
-const db = mongoose.connection;
-
-db ? console.log('DB connected successfully') : console.log('Something went wrong');
+mongoose.connection ? console.log('DB connected successfully') : console.log('Something went wrong');
 
 app.get('/', (req, res) => res.send('HELLO WORlD'))
 
