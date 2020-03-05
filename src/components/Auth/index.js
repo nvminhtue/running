@@ -1,10 +1,11 @@
 import React from 'react';
-import axios from 'axios';
 import { withFormik } from 'formik';
 import styled from 'styled-components';
+import { Button, Label } from 'reactstrap';
 
 import { Wrapper } from '../MainScreen';
-import { Button, Label, Input } from 'reactstrap';
+import { Input } from '../../common';
+import { RegistrationValidation } from '../../validation';
 
 const RegisterWrapper = styled.div`
   display: flex;
@@ -30,26 +31,28 @@ const PasswordField = styled(Input)`
   -webkit-text-security: disc;
 `;
 
-
 export default withFormik({
-  handleSubmit: ({ resetForm }) => {
+  enableReinitialize: true,
+  validationSchema: RegistrationValidation,
+  handleSubmit: (values, { resetForm, props: { setAuthentication } }) => {
+    setAuthentication(true);
     resetForm();
   }
-})(({ isAuthenticated }) => {
+})(({ isAuthenticated, handleSubmit, errors, submitCount }) => {
   return (
     <Wrapper isDisplay={!isAuthenticated}>
       <RegisterWrapper>
         <RegistrationLabel>Registration Form</RegistrationLabel>
         <FieldLabel>Name</FieldLabel>
-        <Input name='name' />
+        <Input name='name' error={(errors && !!submitCount && errors.name) || ''} />
         <FieldLabel>Username</FieldLabel>
-        <Input name='username' />
+        <Input name='username' error={(errors && !!submitCount && errors.username) || ''} />
         <FieldLabel>Password</FieldLabel>
-        <PasswordField name='password' />
+        <PasswordField name='password' error={(errors && !!submitCount && errors.password) || ''} />
         <FieldLabel>Confirm Password</FieldLabel>
-        <PasswordField name='confirmPassword' />
+        <PasswordField name='confirmPassword' error={(errors && !!submitCount && errors.confirmPassword) || ''} />
         <hr />
-        <Button>Submit</Button>
+        <Button onClick={handleSubmit}>Submit</Button>
       </RegisterWrapper>
     </Wrapper>
   );
