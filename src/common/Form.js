@@ -15,6 +15,7 @@ const FormWrapper = styled.div`
     ${props => !props.isDisplay && css`
         opacity: 0;
         max-height: 0;
+        max-width: 0;
     `}
 `;
 

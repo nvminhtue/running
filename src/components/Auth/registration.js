@@ -3,8 +3,7 @@ import { withFormik } from 'formik';
 import styled from 'styled-components';
 import { Button, Label } from 'reactstrap';
 
-import { Wrapper } from '../MainScreen';
-import { Input } from '../../common';
+import { Input, Form } from '../../common';
 import { RegistrationValidation } from '../../validation';
 
 const RegisterWrapper = styled.div`
@@ -27,6 +26,10 @@ const FieldLabel = styled(Label)`
   font-weight: 400;
 `;
 
+const SubmitButton = styled(Button)`
+  font-family: 'FiraCode-Retina';
+`;
+
 const PasswordField = styled(Input)`
   -webkit-text-security: disc;
 `;
@@ -34,13 +37,14 @@ const PasswordField = styled(Input)`
 export default withFormik({
   enableReinitialize: true,
   validationSchema: RegistrationValidation,
-  handleSubmit: (values, { resetForm, props: { setAuthentication } }) => {
+  handleSubmit: (values, { resetForm, props: { setAuthentication, setRegister } }) => {
     setAuthentication(true);
+    setRegister(false);
     resetForm();
   }
-})(({ isAuthenticated, handleSubmit, errors, submitCount }) => {
+})(({ isAuthenticated, handleSubmit, errors, submitCount, isRegister }) => {
   return (
-    <Wrapper isDisplay={!isAuthenticated}>
+    <Form isDisplay={!isAuthenticated && isRegister}>
       <RegisterWrapper>
         <RegistrationLabel>Registration Form</RegistrationLabel>
         <FieldLabel>Name</FieldLabel>
@@ -52,8 +56,8 @@ export default withFormik({
         <FieldLabel>Confirm Password</FieldLabel>
         <PasswordField name='confirmPassword' error={(errors && !!submitCount && errors.confirmPassword) || ''} />
         <hr />
-        <Button onClick={handleSubmit}>Submit</Button>
+        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </RegisterWrapper>
-    </Wrapper>
+    </Form>
   );
 });
