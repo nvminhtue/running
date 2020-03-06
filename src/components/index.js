@@ -3,7 +3,7 @@ import ReactCanvasNest from 'react-canvas-nest';
 import styled from 'styled-components';
 
 import MainScreen from './MainScreen'
-import Registration from './Registration'
+import Auth from './Auth'
 import { Toast } from '../common';
 
 const AppWrapper = styled.div`
@@ -20,14 +20,12 @@ const AppWrapper = styled.div`
 `;
 
 export default () => {
-  const [ isAuthenticated, setAuthenticaton ] = useState(false);
-
-  console.log(isAuthenticated);
+  const [ isAuthenticated, setAuthentication ] = useState(false);
 
   return (
     <AppWrapper>
       <ReactCanvasNest className='canvasNest' config={{ pointColor: ' 255, 255, 255 ', count: '60' }} style={{ zIndex: 1, minHeight: '100%' }} />
-      <Registration {...{ setAuthenticaton, isAuthenticated }} />
+      <Auth {...{ setAuthentication, isAuthenticated }} />
       <MainScreen { ... { isAuthenticated }} />
       <Toast />
     </AppWrapper>
