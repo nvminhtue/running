@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
 
 import './index.css';
 import App from './components';
 import { FontStyle } from './asset/fonts'
+import configStore from './store';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-ReactDOM.render(
-  <React.Fragment>
-    <App />
-    <FontStyle />
-  </React.Fragment>
-, document.getElementById('root'));
+const { store, persistor } = configStore();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+ReactDOM.render(
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <App />
+    </PersistGate>
+    <FontStyle />
+  </Provider>
+, document.getElementById('root'));

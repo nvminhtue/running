@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'formik';
 
 import TypeForm from './TypeForm';
 import TimeForm from './TimeForm';
 import Greeting from './Greeting';
-import { connect } from 'formik';
 
 const FormWrapper = styled.div`
   display: flex;
