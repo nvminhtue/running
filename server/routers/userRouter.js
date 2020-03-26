@@ -6,9 +6,9 @@ console.log('model', mongooseUser)
 
 router.get('/', async (req, res, next) => {
     try {
-        var result = await mongooseUser.find().exec();
+        var results = await mongooseUser.find().exec();
         console.log(mongooseUser)
-        res.send(result);
+        res.send(results);
     } catch (err) {
         res.status(500).send(err)
     }
@@ -23,6 +23,7 @@ router.post('/register', async (req, res) => {
     console.log('result', result)
     res.send(result);
   } catch (err) {
+    console.log('err', err);
     res.status(500).send(err);
   }
 });
@@ -32,15 +33,15 @@ router.post('/login', async (req, res) => {
     var user = await mongooseUser.findOne({ username: req.body.username }).exec();
     console.log('user', user)
     if (!user) {
-      return res.status(400).send({ message: 'Username or password no match' });
+      return res.status(400).send({ message: 'Username or password not match' });
     } else {
       console.log('compare')
       user.comparePassword(req.body.password, (err, match) => {
         console.log('match', match)
         if (!match) {
-          return res.status(400).send({ message: 'Username or password no match' });
+          return res.status(400).send({ message: 'Username or password not match' });
         }
-        res.send(`Welcome back ${user.name}`);
+        res.send(user);
       });
     }
   } catch (err) {

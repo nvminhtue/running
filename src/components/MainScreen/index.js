@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { compose } from 'redux';
+import { connect as connectToRedux } from 'react-redux';
 import { withFormik } from 'formik';
-import { toast } from 'react-toastify';
 import { MdAnnouncement, MdHome } from 'react-icons/md';
 
 import { MainValidation } from '../../validation';
@@ -10,6 +10,8 @@ import { defaultValues } from '../../models';
 import MainForm from '../Form';
 import { mainRunning } from '../../asset/images'
 import { Modal } from '../../common';
+import { userSelector } from '../../selectors/userSelector';
+import { createRecord, getAllRecords } from '../../actions/recordAction';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -27,17 +29,17 @@ export const Wrapper = styled.div`
 `;
 
 const LeftImage = styled.img`
-    width: 100%;
+  width: 100%;
 `;
 
 const Part = styled.div`
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    ${ props => props.portion && css`
-        width: ${props.portion}
-    `}
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  ${ props => props.portion && css`
+    width: ${props.portion};
+  `}
 `;
 
 const TimeLogButton = styled(MdAnnouncement)`
@@ -69,21 +71,27 @@ const HomeButton = styled(MdHome)`
 `;
 
 export default compose(
+  connectToRedux(userSelector, { createRecord, getAllRecords }),
   withFormik({
     enableReinitialize: true,
     mapPropsToValues: () => defaultValues(),
     validationSchema: MainValidation,
-    handleSubmit: (values, { resetForm }) => {
-      toast.success('Chuẩn bị tiền nhé');
-      resetForm();
+    handleSubmit: (values, { resetForm, props: { userId, createRecord } }) => {
+      const { isOffToday, isLateToday, inlateTime, actualInlate } = values;
+      createRecord({ params: { userId, isOffToday, isLateToday, inlateTime, actualInlate }, meta: {resetForm} })
     }
   })
-)(({ isAuthenticated, handleSubmit, resetForm, ...rest }) => {
+)(({ isAuthenticated, handleSubmit, resetForm, getAllRecords, ...rest }) => {
   const [isOpenLog, setOpenLog] = useState(false);
   const [isHome, setHome] = useState(false);
   const [typeClick, setTypeClick] = useState(false);
   const [timeSubmit, setTimeSubmit] = useState(false);
   const [isGreeting, setGreeting] = useState(false);
+
+  const handleLogButton = () => {
+    setOpenLog(true);
+    getAllRecords();
+  };
 
   useEffect(() => {
     if (isHome) {
@@ -98,7 +106,7 @@ export default compose(
 
   return (
     <Wrapper isDisplay={isAuthenticated}>
-      <TimeLogButton onClick={() => setOpenLog(true)} />
+      <TimeLogButton onClick={handleLogButton} />
       <HomeButton onClick={() => setHome(!isHome)} />
       <Modal {...{ isOpenLog, setOpenLog }} />
       <Part portion={'40%'}>

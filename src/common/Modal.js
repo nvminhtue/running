@@ -1,15 +1,17 @@
 import React from 'react';
-import ReactModal from 'react-modal'
+import ReactModal from 'react-modal';
 import styled from 'styled-components';
-import { MdCancel } from 'react-icons/md'
-import { connect } from 'formik';
+import { MdCancel } from 'react-icons/md';
+import { connect as connectToRedux } from 'react-redux';
+
+import { recordSelector } from '../selectors/recordSelector';
 
 const modalStyle = {
   overlay: {
     position: 'absolute',
     zIndex: '9',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-  },
+    backgroundColor: 'rgba(0,0,0,0.6)'
+  }
 };
 
 const CloseButton = styled(MdCancel)`
@@ -24,15 +26,15 @@ const CloseButton = styled(MdCancel)`
   &:hover {
     color: #000;
   }
-`
+`;
 
 export const CentralModal = styled(ReactModal).attrs({
   style: modalStyle,
-  ariaHideApp: false,
+  ariaHideApp: false
 })`
   display: flex;
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
 `;
@@ -66,11 +68,14 @@ const Detail = styled.td`
 
 const Row = styled.tr`
   &:hover {
-    background-color:#f5f5f5;
+    background-color: #f5f5f5;
   }
 `;
 
-export default connect(({ isOpenLog, setOpenLog }) => {
+export default connectToRedux(
+  recordSelector,
+  {}
+)(({ isOpenLog, setOpenLog, records }) => {
   return (
     <CentralModal isOpen={isOpenLog}>
       <CloseButton onClick={() => setOpenLog(false)} />
@@ -82,14 +87,17 @@ export default connect(({ isOpenLog, setOpenLog }) => {
             <Head>Late</Head>
             <Head>Actual Late</Head>
           </Row>
-          <Row>
-            <Detail>Pato</Detail>
-            <Detail>false</Detail>
-            <Detail>8</Detail>
-            <Detail>10</Detail>
-          </Row>
+          {records &&
+            records.map(record => (
+              <Row>
+                <Detail>{record.runnerName}</Detail>
+                <Detail>{record.isOffToday ? 'true' : 'false'}</Detail>
+                <Detail>{record.inlateTime}</Detail>
+                <Detail>{record.actualInlate}</Detail>
+              </Row>
+            ))}
         </Table>
       </TimeLog>
     </CentralModal>
-  )
-})
+  );
+});

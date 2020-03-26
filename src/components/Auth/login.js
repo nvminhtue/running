@@ -1,10 +1,14 @@
 import React from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { withFormik } from 'formik';
 import styled from 'styled-components';
 import { Button, Label, NavLink } from 'reactstrap';
 import { toast } from 'react-toastify';
 
 import { Input, Form } from '../../common';
+import { userLogin } from '../../actions/userAction';
+import { defaultLoginValues } from '../../models';
 
 const RegisterWrapper = styled.div`
   display: flex;
@@ -44,22 +48,32 @@ const LoginButton = styled(Button)`
   font-family: 'FiraCode-Retina';
 `;
 
-export default withFormik({
-  enableReinitialize: true,
-  handleSubmit: async (values, { resetForm, props: { setAuthentication } }) => {
-    toast.success('WELCOME BACK');
-    setAuthentication(true);
-    resetForm();
-  }
-})(({ isAuthenticated, handleSubmit, errors, submitCount, isRegister, setRegister }) => {
+export default compose(
+  connect(null, { userLogin }),
+  withFormik({
+    enableReinitialize: true,
+    handleSubmit: async (values, { resetForm, props: { setAuthentication, userLogin } }) => {
+      const { username, password } = values;
+      userLogin({params: { username, password }, meta: { setAuthentication, resetForm, defaultValues: defaultLoginValues, toast }})
+    }
+}))(({ isAuthenticated, handleSubmit, errors, submitCount, isRegister, setRegister, values }) => {
   return (
     <Form isDisplay={!isAuthenticated && !isRegister}>
       <RegisterWrapper>
         <LoginLabel>Login</LoginLabel>
         <FieldLabel>Username</FieldLabel>
-        <Input name='username' error={(errors && !!submitCount && errors.username) || ''} />
+        <Input
+          name='username' error={(errors && !!submitCount && errors.username) || ''}
+          // value={values.username || ''}
+          onKeyPress={ e => e.key === 'Enter' && handleSubmit() }
+        />
         <FieldLabel>Password</FieldLabel>
-        <PasswordField name='password' error={(errors && !!submitCount && errors.password) || ''} />
+        <PasswordField
+          name='password'
+          error={(errors && !!submitCount && errors.password) || ''}
+          // value={values.password || ''}
+          onKeyPress={ e => e.key === 'Enter' && handleSubmit() }
+        />
         <hr />
         <LoginButton onClick={handleSubmit}>Login</LoginButton>
         <RegistrationNav onClick={() => setRegister(true)}>Click here to register</RegistrationNav>

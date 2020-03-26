@@ -1,10 +1,10 @@
 import { handleActions } from 'redux-actions';
 
-import { getUserInfo } from '../actions/userAction';
+import { saveAllRecords } from '../actions/recordAction';
 
 export default handleActions({
-  [getUserInfo]: (state, action) => ({
+  [saveAllRecords]: (state, action) => ({
     ...state,
     ...action.payload,
   })
-}, {})
+}, []);

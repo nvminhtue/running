@@ -13,7 +13,7 @@ const persistConfig = {
   key: PERSIST_KEY,
   storage,
   stateReconciler: autoMergeLevel2,
-  trnasforms: [createTransform(
+  transform: [createTransform(
     (inboundState) => ({ ...inboundState, error: '' }),
     (outboundState) => ({ ...outboundState, error: '' })
   )]
