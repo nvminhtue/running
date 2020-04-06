@@ -1,5 +1,7 @@
 import { toast } from 'react-toastify';
+
 import V1 from './v1';
+import { addAuthorizationHeader } from '../common';
 
 class User extends V1 {
   userLogin = ({ loginParams }) => {
@@ -12,6 +14,10 @@ class User extends V1 {
     catch (e) {
       toast.error(e.response.data.message);
     }
+  }
+  userInfo = () => {
+    this.client.defaults.headers = addAuthorizationHeader(this.client.defaults.headers);
+    return this.client.get(`/user/my-profile`)
   }
 }
 

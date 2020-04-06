@@ -1,6 +1,6 @@
-var { mongoose } = require('../index');
+const { mongoose } = require('../index');
 
-var RecordSchema = mongoose.Schema({
+const RecordSchema = mongoose.Schema({
   isOffToday: {
     type: Boolean,
     default: false,

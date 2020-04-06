@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-// import { mapKeys, snakeCase, ca } from 'lodash';
 
 const DEFAULT_API_CONFIG: AxiosRequestConfig = {
   baseURL: 'http://localhost:8000',
@@ -7,7 +6,7 @@ const DEFAULT_API_CONFIG: AxiosRequestConfig = {
   apiVersion: 'v1',
   headers: {
     'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*",
+    'Access-Control-Allow-Origin': '*',
   }
 };
 

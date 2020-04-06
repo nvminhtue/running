@@ -1,43 +1,68 @@
 let router = require('express').Router();
 
-let { mongooseUser } = require('../models/User')
-let { mongooseRecord } = require('../models/Record')
+let { mongooseUser } = require('../models/User');
+let { mongooseRecord } = require('../models/Record');
+const auth = require('../middlewares/auth');
+const { findRecordDate } = require('../common');
 
-console.log('model Record', mongooseRecord)
-
-router.get('/', async (req, res, next) => {
+router.get('/', auth, async (req, res, next) => {
   try {
     const records = await mongooseRecord.find().exec();
     res.send(records);
   } catch (err) {
     res.status(500).send(err);
   }
-})
+});
 
-router.post('/add', async (req, res, next) => {
+router.post('/add', auth, async (req, res, next) => {
   try {
     var record = new mongooseRecord();
-    record.isOffToday = req.body.isOffToday
-    record.isLateToday = req.body.isLateToday
-    record.inlateTime = req.body.inlateTime
-    record.actualInlate = req.body.actualInlate
-    console.log('record', req.body)
-    await mongooseUser.findOne({ _id: req.body.userId },
-    (err, user) => {
-      if(user) {
-        console.log('user' ,user)
-        user.records.push(record);
-        record.runner = user._id
+    record.isOffToday = req.body.isOffToday;
+    record.isLateToday = req.body.isLateToday;
+    record.inlateTime = req.body.inlateTime;
+    record.actualInlate = req.body.actualInlate;
+    await mongooseUser.findById(req.user.id, async (err, user) => {
+      if (user) {
+        record.runner = user._id;
         record.runnerName = user.name;
         user.save();
-        record.save()
-        // next();
-        return res.send('Successfully saved')
-      } else console.log('err',err)
+
+        const foundDate = findRecordDate(new Date());
+        const runnerName = user.name;
+        const { isOffToday, isLateToday, inlateTime, actualInlate } = record;
+
+        const updatingRecord = {
+          isOffToday,
+          isLateToday,
+          inlateTime,
+          actualInlate
+        };
+
+        const foundRecord = await mongooseRecord
+          .findOne(
+            {
+              created_at: { $gte: foundDate.today, $lte: foundDate.tomorrow },
+              runnerName
+            },
+            err => err && console.log(err)
+          )
+          .exec();
+
+        if (foundRecord) {
+          foundRecord.update(updatingRecord, (err, newOne) => {
+            if (err) console.log(err);
+            if (newOne) {
+              next();
+            }
+          });
+        } else {
+          record.save();
+        }
+        return res.send('Successfully saved');
+      } else console.log('err_add', err);
       return res.status(500).send(err);
-    })
-  }
-  catch (err) {
+    });
+  } catch (err) {
     return res.status(500).send(err);
   }
 });
