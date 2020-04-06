@@ -12,6 +12,7 @@ import { mainRunning } from '../../asset/images'
 import { Modal } from '../../common';
 import { userSelector } from '../../selectors/userSelector';
 import { createRecord, getAllRecords } from '../../actions/recordAction';
+import { logout } from '../../actions/userAction';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -70,50 +71,90 @@ const HomeButton = styled(MdHome)`
   }
 `;
 
+const Logout = styled.label`
+  position: absolute;
+  top: -60px;
+  right: -20px;
+  font-size: 20px;
+  color: black;
+  cursor: pointer;
+  z-index: 3;
+
+  &:hover {
+    color: gray;
+  }
+`;
+
 export default compose(
-  connectToRedux(userSelector, { createRecord, getAllRecords }),
+  connectToRedux(userSelector, { createRecord, getAllRecords, logout }),
   withFormik({
     enableReinitialize: true,
     mapPropsToValues: () => defaultValues(),
     validationSchema: MainValidation,
     handleSubmit: (values, { resetForm, props: { userId, createRecord } }) => {
       const { isOffToday, isLateToday, inlateTime, actualInlate } = values;
-      createRecord({ params: { userId, isOffToday, isLateToday, inlateTime, actualInlate }, meta: {resetForm} })
+      createRecord({ params: { userId, isOffToday, isLateToday, inlateTime, actualInlate }, meta: { resetForm } });
     }
   })
-)(({ isAuthenticated, handleSubmit, resetForm, getAllRecords, ...rest }) => {
+)(({ setAuthentication, isAuthenticated, handleSubmit, resetForm, getAllRecords, logout, ...rest }) => {
   const [isOpenLog, setOpenLog] = useState(false);
   const [isHome, setHome] = useState(false);
   const [typeClick, setTypeClick] = useState(false);
   const [timeSubmit, setTimeSubmit] = useState(false);
   const [isGreeting, setGreeting] = useState(false);
 
+  const resetStates = () => {
+    setOpenLog(false);
+    setHome(false);
+    setTypeClick(false);
+    setTimeSubmit(false);
+    setGreeting(false);
+    resetForm();
+  }
+
   const handleLogButton = () => {
     setOpenLog(true);
     getAllRecords();
   };
 
+  const handleLogout = () => {
+    logout({ meta: { setAuthentication, resetStates } });
+    // localStorage.removeItem('token')
+    // setAuthentication(false);
+  };
+
   useEffect(() => {
     if (isHome) {
-      setOpenLog(false);
-      setHome(false);
-      setTypeClick(false);
-      setTimeSubmit(false);
-      setGreeting(false);
-      resetForm();
+      resetStates();
     }
-  }, [isHome, resetForm]);
+  });
 
   return (
     <Wrapper isDisplay={isAuthenticated}>
       <TimeLogButton onClick={handleLogButton} />
+      <Logout onClick={handleLogout}>Logout</Logout>
       <HomeButton onClick={() => setHome(!isHome)} />
       <Modal {...{ isOpenLog, setOpenLog }} />
       <Part portion={'40%'}>
         <LeftImage src={mainRunning} alt='aaa' />
       </Part>
       <Part portion={'60%'}>
-        <MainForm {...{ handleSubmit, isOpenLog, setOpenLog, setHome, isHome, typeClick, setTypeClick, timeSubmit, setTimeSubmit, isGreeting, setGreeting, ...rest }} />
+        <MainForm
+          {...{
+            handleSubmit,
+            isOpenLog,
+            setOpenLog,
+            setHome,
+            isHome,
+            typeClick,
+            setTypeClick,
+            timeSubmit,
+            setTimeSubmit,
+            isGreeting,
+            setGreeting,
+            ...rest
+          }}
+        />
       </Part>
     </Wrapper>
   );

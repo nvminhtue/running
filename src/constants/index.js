@@ -7,4 +7,6 @@ export const ActionTypes = keyMirror({
   CREATE_RECORD: undefined,
   GET_ALL_RECORDS: undefined,
   SAVE_ALL_RECORDS: undefined,
+  LOGOUT: undefined,
+  CLEAR_STORE: undefined,
 });

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withFormik } from 'formik';
 import styled from 'styled-components';
 import { Button, Label, NavLink } from 'reactstrap';
-import { toast } from 'react-toastify';
 
 import { Input, Form } from '../../common';
 import { userLogin } from '../../actions/userAction';
@@ -54,7 +53,7 @@ export default compose(
     enableReinitialize: true,
     handleSubmit: async (values, { resetForm, props: { setAuthentication, userLogin } }) => {
       const { username, password } = values;
-      userLogin({params: { username, password }, meta: { setAuthentication, resetForm, defaultValues: defaultLoginValues, toast }})
+      userLogin({params: { username, password }, meta: { setAuthentication, resetForm, defaultValues: defaultLoginValues }})
     }
 }))(({ isAuthenticated, handleSubmit, errors, submitCount, isRegister, setRegister, values }) => {
   return (
@@ -64,14 +63,14 @@ export default compose(
         <FieldLabel>Username</FieldLabel>
         <Input
           name='username' error={(errors && !!submitCount && errors.username) || ''}
-          // value={values.username || ''}
+          value={values.username || ''}
           onKeyPress={ e => e.key === 'Enter' && handleSubmit() }
         />
         <FieldLabel>Password</FieldLabel>
         <PasswordField
           name='password'
           error={(errors && !!submitCount && errors.password) || ''}
-          // value={values.password || ''}
+          value={values.password || ''}
           onKeyPress={ e => e.key === 'Enter' && handleSubmit() }
         />
         <hr />

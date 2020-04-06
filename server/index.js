@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost/resthub', { useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/running', { useNewUrlParser: true});
 
 mongoose.connection ? console.log('DB connected successfully') : console.log('Something went wrong');
 

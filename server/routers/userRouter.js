@@ -1,51 +1,85 @@
-let router = require('express').Router();
+const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 
-let { mongooseUser } = require('../models/User');
-
-console.log('model', mongooseUser)
+const { mongooseUser } = require('../models/User');
+const auth = require('../middlewares/auth');
 
 router.get('/', async (req, res, next) => {
-    try {
-        var results = await mongooseUser.find().exec();
-        console.log(mongooseUser)
-        res.send(results);
-    } catch (err) {
-        res.status(500).send(err)
-    }
+  try {
+    var results = await mongooseUser.find().exec();
+    res.send(results);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.get('/my-profile', auth, async (req, res) => {
+  try {
+    const user = await mongooseUser.findById(req.user.id);
+    res.json(user);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
 router.post('/register', async (req, res) => {
   try {
-    var user = new mongooseUser(req.body);
-    console.log('body', req.body)
-    console.log('user', user)
-    var result = await user.save();
-    console.log('result', result)
-    res.send(result);
+    const user = new mongooseUser(req.body);
+    await user.save();
+    const payload = {
+      user: {
+        id: user._id
+      }
+    };
+
+    jwt.sign(
+      payload,
+      'secret',
+      {
+        expiresIn: '365d'
+      },
+      (err, token) => {
+        if (err) console.log('jwt err', err);
+        res.status(200).json({ token });
+      }
+    );
   } catch (err) {
-    console.log('err', err);
     res.status(500).send(err);
   }
 });
 
 router.post('/login', async (req, res) => {
   try {
-    var user = await mongooseUser.findOne({ username: req.body.username }).exec();
-    console.log('user', user)
+    const user = await mongooseUser.findOne({ username: req.body.username }).exec();
     if (!user) {
       return res.status(400).send({ message: 'Username or password not match' });
     } else {
-      console.log('compare')
       user.comparePassword(req.body.password, (err, match) => {
-        console.log('match', match)
         if (!match) {
           return res.status(400).send({ message: 'Username or password not match' });
         }
-        res.send(user);
+        const payload = {
+          user: {
+            id: user._id,
+            name: user.name,
+            username: user.username
+          }
+        };
+
+        jwt.sign(
+          payload,
+          'secret',
+          {
+            expiresIn: '365d'
+          },
+          (err, token) => {
+            if (err) console.log('err token', err);
+            res.status(200).json({ token });
+          }
+        );
       });
     }
   } catch (err) {
-    console.log('RETARD ALERT', err);
     res.status(500).send(err);
   }
 });

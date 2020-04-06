@@ -11,6 +11,8 @@ function* createRecordSaga(action) {
     toast.success('Chuẩn bị tiền nhé!');
     resetForm();
   } catch(e) {
+    console.log(e)
+    toast.error(e.response.statusText);
     // do nothing
   }
 }
@@ -20,7 +22,7 @@ function* getAllRecordsSaga() {
     const response = yield call([RecordApi, RecordApi.getAllRecords]);
     yield put(saveAllRecords(response.data))
   } catch(e) {
-    //do nothing
+    toast.error(e.response.statusText);
   }
 }
 
