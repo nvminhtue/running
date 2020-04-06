@@ -13,7 +13,7 @@ const persistConfig = {
   key: PERSIST_KEY,
   storage,
   stateReconciler: autoMergeLevel2,
-  trnasforms: [createTransform(
+  transform: [createTransform(
     (inboundState) => ({ ...inboundState, error: '' }),
     (outboundState) => ({ ...outboundState, error: '' })
   )]
@@ -22,10 +22,11 @@ const persistConfig = {
 export default() => {
   const sagaMiddleware = createSagaMiddleware();
 
-  const configStore = () => createStore(
-    persistReducer(persistConfig, rootReducer),
-    ((process.browser && window._REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose)(applyMiddleware(sagaMiddleware))
-  );
+  const configStore = () =>
+    createStore(
+      persistReducer(persistConfig, rootReducer),
+      ((process.browser && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose)(applyMiddleware(sagaMiddleware))
+    );
 
   const store = configStore();
   const persistor = persistStore(store);

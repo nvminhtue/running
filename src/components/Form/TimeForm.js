@@ -1,21 +1,15 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'formik';
-import { Input, Button } from 'reactstrap';
+import { Input } from 'reactstrap';
 import { toast } from 'react-toastify';
 
 import { Form } from '../../common'
-
-const ReactButton = styled(Button)`
-  width: 100px;
-  height: 40px;
-  font-family: 'FiraCode-Retina';
-  font-weight: 400;
-`;
+import { TypeButton } from './TypeForm';
 
 const ReactInput = styled(Input)`
   width: 400px;
-  height: 40px;
+  height: 50px;
   margin: 0 10px;
   font-family: 'FiraCode-Retina';
   font-weight: 400;
@@ -25,7 +19,7 @@ const ReactInput = styled(Input)`
 
 const Label = styled.h5`
   font-family: 'FiraCode-Retina';
-  margin: 0;
+  margin: 0 0 10px 0;
   width: 100%;
   text-align: center;
 `;
@@ -50,7 +44,7 @@ const TimeForm = ({ setTimeSubmit, timeSubmit, typeClick, handleSubmit, setGreet
       <Label>Me come late (minutes)</Label>
       <div style={{ display: 'flex', 'justifyContent': 'center', width: '100%' }}>
         <ReactInput name='inlateTime' placeholder={"e.g: 10 - number dude, number!"} value={values.inlateTime} onChange={ (e) => setFieldValue('inlateTime', e.target.value) } />
-        <ReactButton color='info' onClick={() => clickTime()}>Pay me</ReactButton>
+        <TypeButton type='submit' onClick={() => clickTime()}>Pay me</TypeButton>
       </div>
     </Form>
   )

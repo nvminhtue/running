@@ -20,7 +20,7 @@ export default connect(({ formik: { setFieldValue }, name, ...rest}) => {
     <ErrorTooltip {...rest}>
       <CommonInput
         {...rest}
-        onBlur={e => handleInput(e.target.value)}
+        onChange={e => handleInput(e.target.value)}
       />
     </ErrorTooltip>
   );})
