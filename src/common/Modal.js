@@ -60,7 +60,7 @@ const columns = [
 ];
 
 const fetchData = records =>
-  records.map(record => {
+  records && records.map(record => {
     return {
       runner: record.runnerName,
       off: record.isOffToday ? 'true' : 'false',
